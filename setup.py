@@ -20,7 +20,8 @@ setup(
     license="MIT License",
     packages=["idlerich"],
     install_requires=[
-        "rich>=13.0.0a1"
+        "rich>=13.0.0a1",
+        "packaging>=23.0"
     ],
     python_requires=">=3.6",
     long_description=readme,
