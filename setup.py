@@ -24,8 +24,5 @@ setup(
     ],
     python_requires=">=3.6",
     long_description=readme,
-    long_description_content_type="text/x-rst",
-    entry_points = {
-        "console_scripts": ["idlerich=idlerich:main"]
-    }
+    long_description_content_type="text/x-rst"
 )

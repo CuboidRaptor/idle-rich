@@ -59,6 +59,7 @@ rich.traceback.install(show_locals=False)\"\"\")
 def main():
     global idlepath, fdir, pyver
 
+    print("Idlerich Patcher started!")
     print(f"Idlepath: {idlepath}")
     print(f"Current file dir of pkg: {fdir}")
     print(f"Currrent py ver: {pyver}")
@@ -82,7 +83,8 @@ def main():
     pywpath = "/".join(pywpath)
     print(f"Pythonw path: {pywpath}")
 
-    subprocess.Popen(f"{pywpath} \"{fdir}/idlelib/idle.pyw\"")
+    print("To run Idlerich, run pythonw on idle.pyw in idlelib in your site-packages folder, at python.")
+    print(f"Your pythonw path is {pywpath}, and your idle script path is {fdir}/idlelib/idle.pyw .")
 
 if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
     # idfk y u would pyinstaller idle but ok
@@ -97,3 +99,6 @@ if not str(sys.version).startswith("3"):
 idlepath = os.path.dirname(sys.executable) + "/Lib/idlelib"
 fdir = os.path.dirname(__file__)
 pyver = sys.hexversion
+
+if __name__ == "__main__":
+    main()
