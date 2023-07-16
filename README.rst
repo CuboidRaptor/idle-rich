@@ -9,4 +9,4 @@ WARNING: This package is *extremely* hacky. Do not use it for any sort of stable
 -------------------------------------------------------------------------------------
 
 If you still want to, :code:`pip install` and run :code:`python -m idlerich` in console.
-Then, you can just run :code:`idle.pyw` in the idlelib folder.
+Then, you can just run :code:`idle.pyw` in the idlelib folder in idlerich site packages.
