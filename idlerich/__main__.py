@@ -5,16 +5,21 @@ import packaging.version
 import shutil
 import subprocess
 
-def regencache():
-    # regen da cache
+def main():
+    # patchin' time
     global idlepath, fdir, pyver
+
+    print("Idlerich Patcher started!")
+    print(f"Idlepath: {idlepath}")
+    print(f"Current file dir of pkg: {fdir}")
+    print(f"Currrent py ver: {pyver}")
 
     try:
         print("Yeeting old cache")
         shutil.rmtree(f"{fdir}/idlelib")
 
     except FileNotFoundError:
-        pass
+        print("FileNotFound removing old cache")
 
     print("Regenerating Cache")
     shutil.copytree(idlepath, f"{fdir}/idlelib")
@@ -30,14 +35,15 @@ def regencache():
     def begin(self, *args, **kwargs):
         retval = self.begin_idle(*args, **kwargs)
         self.write("Python-Rich in namespace.")
-        self.interp.runcode(\"\"\"\
+        self.interp.runcode(\"\"\"\\
 import pkgutil
-module_name = "rich"
-for loader, module_name, is_pkg in pkgutil.walk_packages(__path__):
-    _module = loader.find_module(module_name).load_module(module_name)
-    globals()[module_name] = _module
+import os
+import rich
+for loader, module_name, is_pkg in pkgutil.walk_packages(rich.__path__):
+    __import__(f"rich.{module_name}")
 rich.pretty.install()
-rich.traceback.install(show_locals=False)\"\"\")
+rich.traceback.install(show_locals=False)
+del os, pkgutil\"\"\")
         return retval
 
     # Original begin() from IDLE
@@ -56,34 +62,13 @@ rich.traceback.install(show_locals=False)\"\"\")
             with open(f"{fdir}/idlelib/{file}", "w") as f:
                 f.write(f"# Idlerich patch for imports\nimport sys, os\nsys.path.insert(0, os.path.abspath(os.path.dirname(os.path.abspath(__file__)) + \"/..\"))\n\n" + script)
 
-def main():
-    global idlepath, fdir, pyver
-
-    print("Idlerich Patcher started!")
-    print(f"Idlepath: {idlepath}")
-    print(f"Current file dir of pkg: {fdir}")
-    print(f"Currrent py ver: {pyver}")
-
-    try:
-        with open(f"{fdir}/idlelib/ir_version.txt", "r") as f:
-            ir_version = int(f.read())
-
-            print(f"Cache ver: {ir_version}")
-
-            if ir_version < pyver:
-                regencache()
-
-    except:
-        regencache()
-
     pywpath = list(os.path.split(os.path.abspath(sys.executable)))
     pywpath[~0] = pywpath[~0].split(".")
     pywpath[~0][0] += "w"
     pywpath[~0] = ".".join(pywpath[~0])
     pywpath = "/".join(pywpath)
-    print(f"Pythonw path: {pywpath}")
 
-    print("To run Idlerich, run pythonw on idle.pyw in idlelib in your site-packages folder, at python.")
+    print("\nTo run Idlerich, run pythonw on idle.pyw in idlelib in your site-packages folder, at python.")
     print(f"Your pythonw path is {pywpath}, and your idle script path is {fdir}/idlelib/idle.pyw .")
 
 if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
