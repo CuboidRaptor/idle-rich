@@ -30,7 +30,14 @@ def regencache():
     def begin(self, *args, **kwargs):
         retval = self.begin_idle(*args, **kwargs)
         self.write("Python-Rich in namespace.")
-        self.interp.runcode("import rich.pretty, rich.traceback; rich.pretty.install(); rich.traceback.install(show_locals=False)")
+        self.interp.runcode(\"\"\"\
+import pkgutil
+module_name = "rich"
+for loader, module_name, is_pkg in pkgutil.walk_packages(__path__):
+    _module = loader.find_module(module_name).load_module(module_name)
+    globals()[module_name] = _module
+rich.pretty.install()
+rich.traceback.install(show_locals=False)\"\"\")
         return retval
 
     # Original begin() from IDLE
